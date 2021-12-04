@@ -3,13 +3,8 @@ package day01
 import readInputAsInts
 
 fun main() {
-    fun part1(input: List<Int>): Int {
-        return input.windowed(2).count { it[0] < it[1] }
-    }
-
-    fun part2(input: List<Int>): Int {
-        return part1(input.windowed(3).map { it.sum() }.toList())
-    }
+    fun part1(input: List<Int>): Int = input.windowed(2).count { it[0] < it[1] }
+    fun part2(input: List<Int>): Int = part1(input.windowed(3).map { it.sum() }.toList())
 
     val testInput = readInputAsInts(1, "test_input")
     val input = readInputAsInts(1, "input")
