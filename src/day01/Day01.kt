@@ -4,7 +4,7 @@ import readInputAsInts
 
 fun main() {
     fun part1(input: List<Int>): Int = input.windowed(2).count { it[0] < it[1] }
-    fun part2(input: List<Int>): Int = part1(input.windowed(3).map { it.sum() }.toList())
+    fun part2(input: List<Int>): Int = input.windowed(4).count { it[0] < it[3] }
 
     val testInput = readInputAsInts(1, "test_input")
     val input = readInputAsInts(1, "input")
