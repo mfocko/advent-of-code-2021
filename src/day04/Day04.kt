@@ -2,124 +2,81 @@ package day04
 
 import readInput
 
-fun main() {
-    class Bingo(description: List<String>) {
-        private val draws: List<Int> = description[0].split(",").map { it.toInt() }
-        private var nextDraw: Int = 0
-        private val boards: List<MutableList<MutableList<Int>>> = description.drop(1).chunked(6)
-            .map { board ->
-                board.drop(1)
-                    .map { row ->
-                        row
-                            .split(Regex("\\s+"))
-                            .filter { it != "" }
-                            .map { it.toInt() }
-                            .toMutableList()
-                    }
-                    .toMutableList()
-            }
-        private var orderOfWin: MutableList<MutableList<MutableList<Int>>> = mutableListOf()
+class Bingo(description: List<String>) {
+    private var nextDraw: Int = 0
+    private var orderOfWin: MutableList<MutableList<MutableList<Int>>> = mutableListOf()
 
-        fun mark(board: MutableList<MutableList<Int>>, number: Int) {
-            for (i in board.indices) {
-                for (j in board[i].indices) {
-                    if (board[i][j] == number) {
-                        val before = isWinningBoard(board)
-                        board[i][j] = -1
-                        val after = isWinningBoard(board)
-
-                        if (before != after) {
-                            orderOfWin.add(board)
-                        }
-                    }
+    private val draws: List<Int> = description[0].split(",").map { it.toInt() }
+    private val boards: List<MutableList<MutableList<Int>>> = description.drop(1).chunked(6)
+        .map { board ->
+            board.drop(1)
+                .map { row ->
+                    row
+                        .split(Regex("\\s+"))
+                        .filter { it != "" }
+                        .map { it.toInt() }
+                        .toMutableList()
                 }
-            }
+                .toMutableList()
         }
 
-        fun isWinningBoard(board: MutableList<MutableList<Int>>): Boolean {
-            for (i in board.indices) {
-                val inRow = board[i].count { it == -1 }
-                val inColumn = (board.indices).count { board[it][i] == -1 }
 
-                if (inRow == board.size || inColumn == board.size) {
-                    return true
-                }
-            }
+    // TODO: Clean up
+    private fun mark(board: MutableList<MutableList<Int>>, number: Int) {
+        for (i in board.indices) {
+            for (j in board[i].indices) {
+                if (board[i][j] == number) {
+                    val before = isWinningBoard(board)
+                    board[i][j] = -1
+                    val after = isWinningBoard(board)
 
-            return false
-        }
-
-        fun winningBoardsCount(): Int {
-            var counter = 0
-
-            for (board in boards) {
-                if (isWinningBoard(board)) {
-                    counter++
-                }
-            }
-
-            return counter
-        }
-
-        fun boardsCount(): Int {
-            return boards.size
-        }
-
-        val hasWinner: Boolean
-            get() {
-                for (board in boards) {
-                    if (isWinningBoard(board)) {
-                        return true
+                    if (before != after) {
+                        orderOfWin.add(board)
                     }
                 }
-
-                return false
-            }
-
-        fun draw() {
-            val number = draws[nextDraw++]
-
-            for (board in boards) {
-                mark(board, number)
             }
         }
+    }
 
-        fun sumOfUnmarked(): Int {
-            for (board in boards) {
-                if (!isWinningBoard(board)) {
-                    continue
-                }
-                return board.sumOf { row -> row.filter { it != -1 }.sum() }
-            }
-            return -1
-        }
+    private fun isWinningBoard(board: MutableList<MutableList<Int>>): Boolean = board.indices.any { i ->
+        board[i].count { it == -1 } == board.size || board.indices.count { board[it][i] == -1 } == board.size
+    }
 
-        fun sumOfLast(): Int {
-            return orderOfWin.last().sumOf { row -> row.filter { it != -1 }.sum() }
-        }
+    val winningBoardsCount: Int
+        get() = boards.count { isWinningBoard(it) }
+    val boardsCount: Int
+        get() = boards.size
+    val hasWinner: Boolean
+        get() = boards.any { isWinningBoard(it) }
 
-        fun lastDraw(): Int {
+    fun draw() {
+        val number = draws[nextDraw++]
+        boards.forEach { mark(it, number) }
+    }
+
+    val lastDraw: Int
+        get() {
             check(nextDraw > 0)
             return draws[nextDraw - 1]
         }
+    fun sumOfLast(): Int = orderOfWin.last().sumOf { row -> row.filter { it != -1 }.sum() }
+}
+
+fun part1(input: Bingo): Int {
+    while (!input.hasWinner) {
+        input.draw()
     }
+    return input.sumOfLast() * input.lastDraw
+}
 
-    fun part1(input: Bingo): Int {
-        while (!input.hasWinner) {
-            input.draw()
-        }
-
-        return input.sumOfUnmarked() * input.lastDraw()
+fun part2(input: Bingo): Int {
+    while (input.winningBoardsCount < input.boardsCount) {
+        input.draw()
     }
+    return input.sumOfLast() * input.lastDraw
+}
 
-    fun part2(input: Bingo): Int {
-        while (input.winningBoardsCount() < input.boardsCount()) {
-            input.draw()
-        }
-
-        return input.sumOfLast() * input.lastDraw()
-    }
-
+fun main() {
     val testInput = Bingo(readInput(4, "test_input"))
     val input = Bingo(readInput(4, "input"))
 
