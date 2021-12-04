@@ -1,3 +1,7 @@
+package day03
+
+import readInput
+
 fun main() {
     fun toBits(input: List<String>): List<List<Int>> {
         return input.map { row ->
@@ -48,8 +52,8 @@ fun main() {
     }
 
 
-    val testInput = toBits(readInput("Day03_test"))
-    val input = toBits(readInput("Day03"))
+    val testInput = toBits(readInput(3, "test_input"))
+    val input = toBits(readInput(3, "input"))
 
     check(part1(testInput) == 198)
     println(part1(input))

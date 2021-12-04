@@ -1,3 +1,7 @@
+package day04
+
+import readInput
+
 fun main() {
     class Bingo(description: List<String>) {
         private val draws: List<Int> = description[0].split(",").map { it.toInt() }
@@ -116,8 +120,8 @@ fun main() {
         return input.sumOfLast() * input.lastDraw()
     }
 
-    val testInput = Bingo(readInput("Day04_test"))
-    val input = Bingo(readInput("Day04"))
+    val testInput = Bingo(readInput(4, "test_input"))
+    val input = Bingo(readInput(4, "input"))
 
     check(part1(testInput) == 4512)
     println(part1(input))

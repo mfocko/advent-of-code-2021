@@ -1,3 +1,7 @@
+package day02
+
+import readInput
+
 enum class Command {
     FORWARD, DOWN, UP
 }
@@ -49,8 +53,8 @@ fun main() {
     }
 
 
-    val testInput = toCommands(readInput("Day02_test"))
-    val input = toCommands(readInput("Day02"))
+    val testInput = toCommands(readInput(2, "test_input"))
+    val input = toCommands(readInput(2, "input"))
 
     check(part1(testInput) == 150)
     println(part1(input))
