@@ -47,22 +47,11 @@ fun readVector(input: String): Vector {
     return Vector(readPoint(from), readPoint(to))
 }
 
-fun part1(input: List<Vector>): Int {
+fun findOverlaps(input: List<Vector>): Int {
     var points: MutableMap<Point, Int> = mutableMapOf()
-
-    input.filter { it.horizontalOrVertical }
+    input
         .flatMap { it.points }
         .forEach { points[it] = 1 + points.getOrDefault(it, 0) }
-
-    return points.count { (_, count) -> count >= 2 }
-}
-
-fun part2(input: List<Vector>): Int {
-    var points: MutableMap<Point, Int> = mutableMapOf()
-
-    input.flatMap { it.points }
-        .forEach { points[it] = 1 + points.getOrDefault(it, 0) }
-
     return points.count { (_, count) -> count >= 2 }
 }
 
@@ -70,9 +59,9 @@ fun main() {
     val testInput = readInput(5, "test_input").map { readVector(it) }
     val input = readInput(5, "input").map { readVector(it) }
 
-    check(part1(testInput) == 5)
-    println(part1(input))
+    check(findOverlaps(testInput.filter { it.horizontalOrVertical }) == 5)
+    println(findOverlaps(input.filter { it.horizontalOrVertical }))
 
-    check(part2(testInput) == 12)
-    println(part2(input))
+    check(findOverlaps(testInput) == 12)
+    println(findOverlaps(input))
 }
