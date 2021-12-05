@@ -7,6 +7,12 @@ data class Point(val x: Int, val y: Int) {
     operator fun times(other: Int): Point = Point(other * x, other * y)
 }
 
+fun getRange(from: Int, to: Int): Iterable<Int> = if (from <= to) {
+    from..to
+} else {
+    (to..from).reversed()
+}
+
 data class Vector(val from: Point, val to: Point) {
     val horizontal: Boolean
         get() = from.y == to.y
@@ -18,10 +24,10 @@ data class Vector(val from: Point, val to: Point) {
         get() = horizontal || vertical
 
     private val xs: Iterable<Int>
-        get() = if (from.x <= to.x) (from.x..to.x) else (to.x..from.x).reversed()
+        get() = getRange(from.x, to.x)
 
     private val ys: Iterable<Int>
-        get() = if (from.y <= to.y) (from.y..to.y) else (to.y..from.y).reversed()
+        get() = getRange(from.y, to.y)
 
     val points: Iterable<Point>
         get() = if (horizontalOrVertical) {
