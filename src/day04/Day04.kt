@@ -20,22 +20,19 @@ class Bingo(description: List<String>) {
                 .toMutableList()
         }
 
-
-    // TODO: Clean up
     private fun mark(board: MutableList<MutableList<Int>>, number: Int) {
-        for (i in board.indices) {
-            for (j in board[i].indices) {
-                if (board[i][j] == number) {
-                    val before = isWinningBoard(board)
-                    board[i][j] = -1
-                    val after = isWinningBoard(board)
+        board.indices
+            .flatMap { i -> board.indices.map { j -> Pair(i, j) } }
+            .filter { (i, j) -> board[i][j] == number }
+            .forEach { (i, j) ->
+                val before = isWinningBoard(board)
+                board[i][j] = -1
+                val after = isWinningBoard(board)
 
-                    if (before != after) {
-                        orderOfWin.add(board)
-                    }
+                if (before != after) {
+                    orderOfWin.add(board)
                 }
             }
-        }
     }
 
     private fun isWinningBoard(board: MutableList<MutableList<Int>>): Boolean = board.indices.any { i ->
@@ -59,6 +56,7 @@ class Bingo(description: List<String>) {
             check(nextDraw > 0)
             return draws[nextDraw - 1]
         }
+
     fun sumOfLast(): Int = orderOfWin.last().sumOf { row -> row.filter { it != -1 }.sum() }
 }
 
