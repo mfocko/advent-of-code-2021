@@ -3,14 +3,10 @@ package day06
 import readInputAsCommaSeparatedInts
 
 fun howManyAfter(input: List<Int>, days: Int): Long =
-    (1..days)
-        .fold(List(9) { i -> input.count { it == i }.toLong() }) { counts, _ ->
-            List(9) { i ->
-                when (i) {
-                    6 -> counts[0] + counts[7]
-                    else -> counts[(i + 1) % 9]
-                }
-            }
+    (0 until days)
+        .fold(MutableList(9) { i -> input.count { it == i }.toLong() }) { counts, day ->
+            counts[(7 + day) % 9] += counts[day % 9]
+            counts
         }
         .sum()
 
