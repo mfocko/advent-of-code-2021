@@ -48,7 +48,7 @@ fun readVector(input: String): Vector {
 }
 
 fun findOverlaps(input: List<Vector>): Int {
-    var points: MutableMap<Point, Int> = mutableMapOf()
+    val points: MutableMap<Point, Int> = mutableMapOf()
     input
         .flatMap { it.points }
         .forEach { points[it] = 1 + points.getOrDefault(it, 0) }
