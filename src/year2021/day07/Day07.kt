@@ -1,4 +1,4 @@
-package day07
+package year2021.day07
 
 import readInputAsCommaSeparatedInts
 import kotlin.math.absoluteValue
@@ -20,7 +20,7 @@ fun part2(input: List<Int>): Int = (input.average().toInt()).let { average ->
 }
 
 fun main() {
-    val testInput = readInputAsCommaSeparatedInts(7, "test_input").sorted()
+    val testInput = readInputAsCommaSeparatedInts(7, "sample").sorted()
     val input = readInputAsCommaSeparatedInts(7, "input").sorted()
 
     check(part1(testInput) == 37)

@@ -1,4 +1,4 @@
-package day05
+package year2021.day05
 
 import readInput
 
@@ -56,7 +56,7 @@ fun findOverlaps(input: List<Vector>): Int {
 }
 
 fun main() {
-    val testInput = readInput(5, "test_input").map { readVector(it) }
+    val testInput = readInput(5, "sample").map { readVector(it) }
     val input = readInput(5, "input").map { readVector(it) }
 
     check(findOverlaps(testInput.filter { it.horizontalOrVertical }) == 5)

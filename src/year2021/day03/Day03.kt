@@ -1,4 +1,4 @@
-package day03
+package year2021.day03
 
 import readInput
 
@@ -44,7 +44,7 @@ fun part2(input: List<List<Int>>): Int {
 }
 
 fun main() {
-    val testInput = toBits(readInput(3, "test_input"))
+    val testInput = toBits(readInput(3, "sample"))
     val input = toBits(readInput(3, "input"))
 
     check(part1(testInput) == 198)

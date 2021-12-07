@@ -2,7 +2,9 @@ import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
 
-private fun openFile(day: Int, name: String) = File("src/day%02d".format(day), "$name.txt")
+var year: Int = 2021
+
+private fun openFile(day: Int, name: String) = File("src/year%4d/day%02d".format(year, day), "$name.txt")
 
 /**
  * Reads lines from the given input txt file.

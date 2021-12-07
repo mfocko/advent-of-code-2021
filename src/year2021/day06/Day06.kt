@@ -1,4 +1,4 @@
-package day06
+package year2021.day06
 
 import readInputAsCommaSeparatedInts
 
@@ -11,7 +11,7 @@ fun howManyAfter(input: List<Int>, days: Int): Long =
         .sum()
 
 fun main() {
-    val testInput = readInputAsCommaSeparatedInts(6, "test_input")
+    val testInput = readInputAsCommaSeparatedInts(6, "sample")
     val input = readInputAsCommaSeparatedInts(6, "input")
 
     check(howManyAfter(testInput, 80) == 5934.toLong())

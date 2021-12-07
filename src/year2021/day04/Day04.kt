@@ -1,4 +1,4 @@
-package day04
+package year2021.day04
 
 import readInput
 
@@ -75,7 +75,7 @@ fun part2(input: Bingo): Int {
 }
 
 fun main() {
-    val testInput = Bingo(readInput(4, "test_input"))
+    val testInput = Bingo(readInput(4, "sample"))
     val input = Bingo(readInput(4, "input"))
 
     check(part1(testInput) == 4512)

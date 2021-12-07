@@ -1,4 +1,4 @@
-package day02
+package year2021.day02
 
 import readInput
 
@@ -50,7 +50,7 @@ fun part2(input: List<Instruction>): Int {
 }
 
 fun main() {
-    val testInput = toCommands(readInput(2, "test_input"))
+    val testInput = toCommands(readInput(2, "sample"))
     val input = toCommands(readInput(2, "input"))
 
     check(part1(testInput) == 150)
