@@ -10,10 +10,12 @@ fun part1(input: List<Int>): Int = input.toSet().minOf { target ->
     }
 }
 
-fun part2(input: List<Int>): Int = (input.minOrNull()!!..input.maxOrNull()!!).minOf { target ->
-    input.sumOf {
-        val diff = (it - target).absoluteValue
-        diff * (diff + 1) / 2
+fun part2(input: List<Int>): Int = (input.average().toInt()).let { average ->
+    (average - 1..average + 1).minOf { target ->
+        input.sumOf {
+            val diff = (it - target).absoluteValue
+            diff * (diff + 1) / 2
+        }
     }
 }
 
