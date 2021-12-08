@@ -75,14 +75,23 @@ fun part1(input: List<String>): Int = input.sumOf { entry ->
     val (patterns, output) = entry.split(" | ")
     val decodedPatterns = Patterns(patterns).decode()
 
-    output.split(" ").map { it.toSet() }.count { decodedPatterns.values.contains(it) }
+    output
+        .split(" ")
+        .count { decodedPatterns.values.contains(it.toSet()) }
 }
 
 fun part2(input: List<String>): Int = input.sumOf { entry ->
     val (patterns, output) = entry.split(" | ")
-    val decodedPatterns = Patterns(patterns).decode(true).map { (key, value) -> Pair(value, key) }.toMap()
+    val decodedPatterns = Patterns(patterns)
+        .decode(true)
+        .map { (key, value) -> Pair(value, key) }
+        .toMap()
 
-    output.split(" ").map { it.toSet() }.fold(0) { n, digit -> 10 * n + decodedPatterns[digit]!! }.toLong()
+    output
+        .split(" ")
+        .map { it.toSet() }
+        .fold(0) { n, digit -> 10 * n + decodedPatterns[digit]!! }
+        .toLong()
 }.toInt()
 
 fun main() {
