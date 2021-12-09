@@ -51,7 +51,7 @@ fun part2(input: List<List<Int>>): Int {
     }
 
     sizes.sortDescending()
-    return sizes.take(3).fold(1) { product, n -> n * product }
+    return sizes.take(3).fold(1, Int::times)
 }
 
 fun main() {
