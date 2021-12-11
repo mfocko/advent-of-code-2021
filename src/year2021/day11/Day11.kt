@@ -55,25 +55,14 @@ fun step(octopuses: MutableList<MutableList<Int>>): Int {
 }
 
 fun part1(input: List<List<Int>>): Int {
-    var flashes = 0
     val octopuses = input.map { row -> row.toMutableList() }.toMutableList()
-
-    repeat(100) {
-        flashes += step(octopuses)
-    }
-
-    return flashes
+    return (1..100).sumOf { step(octopuses) }
 }
 
 fun part2(input: List<List<Int>>): Int {
-    var i = 1
     val octopuses = input.map { row -> row.toMutableList() }.toMutableList()
     val count = octopuses.size * octopuses[0].size
-
-    while (step(octopuses) != count) {
-        i++
-    }
-    return i
+    return (1..Int.MAX_VALUE).first { step(octopuses) == count }
 }
 
 fun main() {
