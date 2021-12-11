@@ -1,7 +1,6 @@
 package year2021.day11
 
 import readInput
-import kotlin.collections.ArrayDeque
 
 fun validAdjacentIndices(input: List<List<Int>>, y0: Int, x0: Int): Iterable<Pair<Int, Int>> =
     (y0 - 1..y0 + 1)
@@ -10,22 +9,20 @@ fun validAdjacentIndices(input: List<List<Int>>, y0: Int, x0: Int): Iterable<Pai
             (y != y0 || x != x0) && (y >= 0 && y < input.size) && (x >= 0 && x < input[y].size)
         }
 
-fun getFlashes(octopuses: MutableList<MutableList<Int>>): List<Pair<Int, Int>> =
-    (octopuses.indices)
-        .flatMap { y -> octopuses[y].indices.map { x -> Pair(y, x) } }
-        .filter { (y, x) -> octopuses[y][x] > 9 }
-        .toList()
+fun allIndices(octopuses: List<List<Int>>): Iterable<Pair<Int, Int>> =
+    octopuses.indices.flatMap { y -> octopuses[y].indices.map { x -> y to x } }
 
-fun step(octopuses: MutableList<MutableList<Int>>): Int {
+fun getFlashes(octopuses: List<List<Int>>): Iterable<Pair<Int, Int>> =
+    allIndices(octopuses).filter { (y, x) -> octopuses[y][x] > 9 }
+
+fun step(octopuses: List<MutableList<Int>>): Int {
     // First, the energy level of each octopus increases by 1.
-    for (y in octopuses.indices) {
-        for (x in octopuses.indices) {
-            octopuses[y][x]++
-        }
+    for ((y, x) in allIndices(octopuses)) {
+        octopuses[y][x]++
     }
 
     // Then, any octopus with an energy level greater than 9 flashes.
-    val queue = ArrayDeque(getFlashes(octopuses))
+    val queue = ArrayDeque(getFlashes(octopuses).toList())
     while (queue.isNotEmpty()) {
         val (y, x) = queue.removeFirst()
 
@@ -43,11 +40,9 @@ fun step(octopuses: MutableList<MutableList<Int>>): Int {
     val flashes = octopuses.sumOf { row -> row.count { it > 9 } }
 
     // Reset energy level.
-    for (y in octopuses.indices) {
-        for (x in octopuses.indices) {
-            if (octopuses[y][x] > 9) {
-                octopuses[y][x] = 0
-            }
+    for ((y, x) in allIndices(octopuses)) {
+        if (octopuses[y][x] > 9) {
+            octopuses[y][x] = 0
         }
     }
 
@@ -55,12 +50,12 @@ fun step(octopuses: MutableList<MutableList<Int>>): Int {
 }
 
 fun part1(input: List<List<Int>>): Int {
-    val octopuses = input.map { row -> row.toMutableList() }.toMutableList()
+    val octopuses = input.map { row -> row.toMutableList() }
     return (1..100).sumOf { step(octopuses) }
 }
 
 fun part2(input: List<List<Int>>): Int {
-    val octopuses = input.map { row -> row.toMutableList() }.toMutableList()
+    val octopuses = input.map { row -> row.toMutableList() }
     val count = octopuses.size * octopuses[0].size
     return (1..Int.MAX_VALUE).first { step(octopuses) == count }
 }
