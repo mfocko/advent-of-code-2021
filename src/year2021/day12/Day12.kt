@@ -2,23 +2,6 @@ package year2021.day12
 
 import readGraph
 
-fun findAllPaths(graph: Map<String, Set<String>>, path: List<String>, visited: Set<String>): Set<String> {
-    if (path.last() == "end") {
-        return setOf(path.joinToString("-"))
-    }
-
-    val neighbours = graph
-        .getOrDefault(path.last(), emptySet())
-        .filter { it == it.uppercase() || !visited.contains(it) }
-
-    return neighbours.map { neighbour ->
-        findAllPaths(graph, path + neighbour, visited + neighbour)
-    }.fold(emptySet()) { acc, it -> acc + it }
-}
-
-fun part1(input: Map<String, Set<String>>): Int =
-    findAllPaths(input, listOf("start"), setOf("start")).size
-
 fun findAllPaths(
     graph: Map<String, Set<String>>,
     path: List<String>,
@@ -41,7 +24,11 @@ fun findAllPaths(
     }.fold(emptySet()) { acc, it -> acc + it }
 }
 
-fun part2(input: Map<String, Set<String>>): Int = findAllPaths(input, listOf("start"), setOf("start"), false).size
+fun part1(input: Map<String, Set<String>>): Int =
+    findAllPaths(input, listOf("start"), setOf("start"), true).size
+
+fun part2(input: Map<String, Set<String>>): Int =
+    findAllPaths(input, listOf("start"), setOf("start"), false).size
 
 fun main() {
     val sample = readGraph(12, "sample")
