@@ -7,9 +7,9 @@ fun findAllPaths(
     path: List<String>,
     visited: Set<String>,
     twiceVisited: Boolean
-): Set<String> {
+): Int {
     if (path.last() == "end") {
-        return setOf(path.joinToString("-"))
+        return 1
     }
 
     val neighbours = graph
@@ -19,14 +19,14 @@ fun findAllPaths(
 
     return neighbours.map { (neighbour, newTwiceVisited) ->
         findAllPaths(graph, path + neighbour, visited + neighbour, newTwiceVisited)
-    }.fold(emptySet()) { acc, it -> acc + it }
+    }.fold(0, Int::plus)
 }
 
 fun part1(input: Map<String, Set<String>>): Int =
-    findAllPaths(input, listOf("start"), setOf("start"), true).size
+    findAllPaths(input, listOf("start"), setOf("start"), true)
 
 fun part2(input: Map<String, Set<String>>): Int =
-    findAllPaths(input, listOf("start"), setOf("start"), false).size
+    findAllPaths(input, listOf("start"), setOf("start"), false)
 
 fun main() {
     val sample = readGraph(12, "sample")
