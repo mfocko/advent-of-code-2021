@@ -17,6 +17,14 @@ fun readInputAsCommaSeparatedInts(day: Int, name: String) = openFile(day, name)
     .split(",")
     .map { it.toInt() }
 
+fun readGraph(day: Int, name: String) = readInput(day, name).fold(mapOf<String, Set<String>>()) { currentGraph, edge ->
+    val (fromVertex, toVertex) = edge.split("-")
+    val fromNeighbours = currentGraph.getOrDefault(fromVertex, emptySet()) + toVertex
+    val toNeighbours = currentGraph.getOrDefault(toVertex, emptySet()) + fromVertex
+
+    currentGraph + mapOf(fromVertex to fromNeighbours, toVertex to toNeighbours)
+}.toMap()
+
 /**
  * Converts string to md5 hash.
  */
