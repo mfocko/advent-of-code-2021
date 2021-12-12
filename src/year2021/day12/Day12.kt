@@ -15,12 +15,10 @@ fun findAllPaths(
     val neighbours = graph
         .getOrDefault(path.last(), emptySet())
         .filter { it == it.uppercase() || (!twiceVisited && it != "start") || !visited.contains(it) }
+        .map { it to ((it == it.lowercase() && visited.contains(it)) || twiceVisited) }
 
-    return neighbours.map { neighbour ->
-        if (neighbour == neighbour.lowercase() && visited.contains(neighbour))
-            findAllPaths(graph, path + neighbour, visited, true)
-        else
-            findAllPaths(graph, path + neighbour, visited + neighbour, twiceVisited)
+    return neighbours.map { (neighbour, newTwiceVisited) ->
+        findAllPaths(graph, path + neighbour, visited + neighbour, newTwiceVisited)
     }.fold(emptySet()) { acc, it -> acc + it }
 }
 
