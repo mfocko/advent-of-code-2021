@@ -55,21 +55,10 @@ fun String.toPolymerTemplate(): PolymerTemplate =
             template + (it to template.getOrDefault(it, 0) + 1)
         }
 
-fun part1(input: List<String>): Long {
+fun run(input: List<String>, steps: Int): Long {
     val polymer = Polymer(input.drop(2).toPolymerRules(), input.first())
 
-    repeat(10) {
-        polymer.step()
-    }
-
-    val elements = polymer.elements
-    return elements.maxOf { it.value } - elements.minOf { it.value }
-}
-
-fun part2(input: List<String>): Long {
-    val polymer = Polymer(input.drop(2).toPolymerRules(), input.first())
-
-    repeat(40) {
+    repeat(steps) {
         polymer.step()
     }
 
@@ -81,9 +70,9 @@ fun main() {
     val sample = readInput(14, "sample")
     val input = readInput(14, "input")
 
-    check(part1(sample) == 1588.toLong())
-    println(part1(input))
+    check(run(sample, 10) == 1588.toLong())
+    println(run(input, 10))
 
-    check(part2(sample) == 2188189693529)
-    println(part2(input))
+    check(run(sample, 40) == 2188189693529)
+    println(run(input, 40))
 }
