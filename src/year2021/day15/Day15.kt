@@ -3,116 +3,103 @@ package year2021.day15
 import readInput
 import java.util.*
 
-fun validAdjacentIndices(input: List<List<Int>>, y0: Int, x0: Int): Iterable<Pair<Int, Int>> =
-    (y0 - 1..y0 + 1)
-        .flatMap { y -> (x0 - 1..x0 + 1).map { x -> Pair(y, x) } }
-        .filter { (y, x) ->
-            (y != y0 || x != x0) && (y == y0 || x == x0) && (y >= 0 && y < input.size) && (x >= 0 && x < input[y].size)
-        }
-
-fun validAdjacentIndicesExtended(input: List<List<Int>>, y0: Int, x0: Int): Iterable<Pair<Int, Int>> =
-    (y0 - 1..y0 + 1)
-        .flatMap { y -> (x0 - 1..x0 + 1).map { x -> Pair(y, x) } }
-        .filter { (y, x) ->
-            (y != y0 || x != x0) && (y == y0 || x == x0) && (y >= 0 && y < 5 * input.size) && (x >= 0 && x < 5 * input[0].size)
-        }
-
-data class Coordinate(val y: Int, val x: Int)
-
-fun part1(input: List<List<Int>>): Int {
-    val final = Coordinate(input.size - 1, input.last().size - 1)
-
-    val queue = PriorityQueue<Pair<Int, Coordinate>>() { a, b ->
-        a.first - b.first
-    }
-    val distances = mutableMapOf<Coordinate, Int>()
-    val processed = mutableSetOf<Coordinate>()
-
-    queue.add(Pair(0, Coordinate(0, 0)))
-    distances[Coordinate(0, 0)] = 0
-    for (y in input.indices) {
-        for (x in input[y].indices) {
-            queue.add(Pair(Int.MAX_VALUE, Coordinate(y, x)))
-        }
-    }
-
-    while (queue.isNotEmpty()) {
-        val (distance, coordinate) = queue.remove()!!
-        if (processed.contains(coordinate)) {
-            continue
-        }
-        processed.add(coordinate)
-
-        if (coordinate == final) {
-            return distance
-        }
-
-        for ((y, x) in validAdjacentIndices(input, coordinate.y, coordinate.x)) {
-            val neighbour = Coordinate(y, x)
-            val alternative = distance + input[y][x]
-
-            if (alternative < (distances[neighbour] ?: Int.MAX_VALUE)) {
-                distances[neighbour] = alternative
-                queue.add(Pair(alternative, neighbour))
-            }
-        }
-    }
-    return Int.MAX_VALUE
+data class Coordinate(val y: Int, val x: Int) {
+    fun adjacent(): Iterable<Coordinate> =
+        listOf(
+            Coordinate(y - 1, x),
+            Coordinate(y + 1, x),
+            Coordinate(y, x + 1),
+            Coordinate(y, x - 1)
+        )
 }
 
-fun getDistance(input: List<List<Int>>, y: Int, x: Int): Int {
-    val riskLevel = input[y % input.size][x % input[0].size]
-    val added = y / input.size + x / input[0].size
+open class Dijkstra(
+    private val input: List<List<Int>>
+) {
+    private val queue: PriorityQueue<Pair<Int, Coordinate>> =
+        PriorityQueue<Pair<Int, Coordinate>> { a, b ->
+            a.first - b.first
+        }
+    private val distances = mutableMapOf<Coordinate, Int>()
+    private val processed = mutableSetOf<Coordinate>()
 
-    if (riskLevel + added > 9) {
-        return riskLevel + added - 9
+    fun getDistance(coordinate: Coordinate): Int =
+        distances[coordinate] ?: Int.MAX_VALUE
+
+    open fun getCost(coordinate: Coordinate): Int =
+        input[coordinate.y][coordinate.x]
+
+    private fun relax(distance: Int, neighbour: Coordinate): Boolean {
+        val alternative = distance + getCost(neighbour)
+        if (alternative >= getDistance(neighbour)) {
+            return false
+        }
+
+        distances[neighbour] = alternative
+        queue.add(Pair(alternative, neighbour))
+        return true
     }
 
-    return riskLevel + added
+    open fun neighbours(coordinate: Coordinate): Iterable<Coordinate> =
+        coordinate.adjacent().filter { (y, x) ->
+            (y >= 0 && y < input.size) && (x >= 0 && x < input[y].size)
+        }
+
+    fun run(start: Coordinate, end: Coordinate): Dijkstra {
+        queue.add(Pair(0, start))
+        distances[start] = 0
+
+        while (queue.isNotEmpty()) {
+            val (distance, coordinate) = queue.remove()!!
+            if (processed.contains(coordinate)) {
+                continue
+            }
+            processed.add(coordinate)
+
+            if (coordinate == end) {
+                return this
+            }
+
+            neighbours(coordinate).forEach { relax(distance, it) }
+        }
+
+        return this
+    }
 }
 
-fun part2(input: List<List<Int>>): Int {
-    val final = Coordinate(5 * input.size - 1, 5 * input.last().size - 1)
-
-    val queue = PriorityQueue<Pair<Int, Coordinate>>() { a, b ->
-        a.first - b.first
-    }
-    val distances = mutableMapOf<Coordinate, Int>()
-    val processed = mutableSetOf<Coordinate>()
-
-    queue.add(Pair(0, Coordinate(0, 0)))
-    distances[Coordinate(0, 0)] = 0
-    for (y in input.indices) {
-        for (x in input[y].indices) {
-            for (i in 0 until 5) {
-                queue.add(Pair(Int.MAX_VALUE, Coordinate(i * y, i * x)))
-            }
-        }
+fun part1(input: List<List<Int>>): Int =
+    Coordinate(input.size - 1, input.last().size - 1).let { end ->
+        Dijkstra(input)
+            .run(
+                Coordinate(0, 0),
+                end
+            ).getDistance(end)
     }
 
-    while (queue.isNotEmpty()) {
-        val (distance, coordinate) = queue.remove()!!
-        if (processed.contains(coordinate)) {
-            continue
-        }
-        processed.add(coordinate)
-
-        if (coordinate == final) {
-            return distance
+class DijkstraOnExtended(private val input: List<List<Int>>) : Dijkstra(input) {
+    override fun neighbours(coordinate: Coordinate): Iterable<Coordinate> =
+        coordinate.adjacent().filter { (y, x) ->
+            (y >= 0 && y < 5 * input.size) && (x >= 0 && x < 5 * input[0].size)
         }
 
-        for ((y, x) in validAdjacentIndicesExtended(input, coordinate.y, coordinate.x)) {
-            val neighbour = Coordinate(y, x)
-            val alternative = distance + getDistance(input, y, x)
+    override fun getCost(coordinate: Coordinate): Int {
+        val (y, x) = coordinate
 
-            if (alternative < (distances[neighbour] ?: Int.MAX_VALUE)) {
-                distances[neighbour] = alternative
-                queue.add(Pair(alternative, neighbour))
-            }
-        }
+        val added = y / input.size + x / input[0].size
+        val riskLevel = input[y % input.size][x % input[0].size] + added
+
+        return if (riskLevel > 9) riskLevel - 9 else riskLevel
     }
-    return Int.MAX_VALUE
 }
+
+fun part2(input: List<List<Int>>): Int =
+    Coordinate(5 * input.size - 1, 5 * input.last().size - 1).let { end ->
+        DijkstraOnExtended(input)
+            .run(
+                Coordinate(0, 0),
+                end
+            ).getDistance(end)
+    }
 
 fun main() {
     val sample = readInput(15, "sample").map { row -> row.map { it.digitToInt() } }
