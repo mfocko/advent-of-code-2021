@@ -11,6 +11,7 @@ private fun openFile(day: Int, name: String) = File("src/year%4d/day%02d".format
  */
 fun readInput(day: Int, name: String) = openFile(day, name).readLines()
 
+fun readInputAsString(day: Int, name: String) = openFile(day, name).readText()
 fun readInputAsInts(day: Int, name: String) = readInput(day, name).map { it.toInt() }
 fun readInputAsCommaSeparatedInts(day: Int, name: String) = openFile(day, name)
     .readText()
