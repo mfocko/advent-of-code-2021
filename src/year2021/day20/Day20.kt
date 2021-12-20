@@ -2,10 +2,10 @@ package year2021.day20
 
 import readInput
 
-data class Point(val x: Int, val y: Int)
-
-fun getSquare(pixel: Point): Iterable<Point> =
-    (pixel.y - 1..pixel.y + 1).flatMap { y -> (pixel.x - 1..pixel.x + 1).map { x -> Point(x, y) } }
+data class Point(val x: Int, val y: Int) {
+    val square: Iterable<Point>
+        get() = (y - 1..y + 1).flatMap { y -> (x - 1..x + 1).map { x -> Point(x, y) } }
+}
 
 data class TrenchMap(
     val algorithm: List<Char>,
@@ -15,28 +15,27 @@ data class TrenchMap(
     fun get(key: Point): Char = map.getOrDefault(key, default)
     fun get(x: Int, y: Int): Char = get(Point(x, y))
 
+    private fun coordinateRange(getter: (Point) -> Int): IntRange =
+        (map.keys.minOf(getter) - 1..map.keys.maxOf(getter) + 1)
+
     private val xs: IntRange
-        get() = (map.keys.minOf { it.x } - 2..map.keys.maxOf { it.x } + 2)
+        get() = coordinateRange { it.x }
 
     private val ys: IntRange
-        get() = (map.keys.minOf { it.y } - 2..map.keys.maxOf { it.y } + 2)
+        get() = coordinateRange { it.y }
 
     private val indices: Iterable<Point>
         get() = ys.flatMap { y -> xs.map { x -> Point(x, y) } }
 
-    fun print() {
-        for (y in ys) {
-            for (x in xs) {
-                print(get(x, y))
-            }
-            println()
+    override fun toString(): String =
+        ys.joinToString("\n") { y ->
+            xs.joinToString("") { x -> get(x, y).toString() }
         }
-    }
 
     private fun toIndex(square: Iterable<Point>): Int =
-        square.map { if (get(it) == '#') 1 else 0 }.fold(0) { acc, bit -> acc * 2 + bit }
+        square.map { if (get(it) == '#') 1 else 0 }.reduce { acc, bit -> acc * 2 + bit }
 
-    private fun enhancePixel(pixel: Point): Char = algorithm[toIndex(getSquare(pixel))]
+    private fun enhancePixel(pixel: Point): Char = algorithm[toIndex(pixel.square)]
 
     fun enhance(): TrenchMap =
         TrenchMap(
@@ -45,7 +44,7 @@ data class TrenchMap(
             when (default) {
                 '.' -> algorithm.first()
                 '#' -> algorithm.last()
-                else -> error("Invalid char found")
+                else -> error("Invalid default char found")
             }
         )
 }
@@ -59,11 +58,11 @@ fun List<String>.toTrenchMap(): TrenchMap =
             }.toMap()
     )
 
-fun part1(input: TrenchMap): Int =
-    (1..2).fold(input) { acc, i -> acc.enhance() }.map.values.count { it == '#' }
+fun enhance(input: TrenchMap, steps: Int): Int =
+    (1..steps).fold(input) { image, _ -> image.enhance() }.map.values.count { it == '#' }
 
-fun part2(input: TrenchMap): Int =
-    (1..50).fold(input) { acc, i -> acc.enhance() }.map.values.count { it == '#' }
+fun part1(input: TrenchMap): Int = enhance(input, 2)
+fun part2(input: TrenchMap): Int = enhance(input, 50)
 
 fun main() {
     val sample = readInput(20, "sample").toTrenchMap()
