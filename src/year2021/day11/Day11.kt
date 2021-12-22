@@ -1,18 +1,18 @@
 package year2021.day11
 
+import product
 import readInput
 
-fun validAdjacentIndices(input: List<List<Int>>, y0: Int, x0: Int): Iterable<Pair<Int, Int>> =
-    (y0 - 1..y0 + 1)
-        .flatMap { y -> (x0 - 1..x0 + 1).map { x -> Pair(y, x) } }
+fun validAdjacentIndices(input: List<List<Int>>, y0: Int, x0: Int): Sequence<Pair<Int, Int>> =
+    product(y0 - 1..y0 + 1, x0 - 1..x0 + 1)
         .filter { (y, x) ->
             (y != y0 || x != x0) && (y >= 0 && y < input.size) && (x >= 0 && x < input[y].size)
         }
 
-fun allIndices(octopuses: List<List<Int>>): Iterable<Pair<Int, Int>> =
-    octopuses.indices.flatMap { y -> octopuses[y].indices.map { x -> y to x } }
+fun allIndices(octopuses: List<List<Int>>): Sequence<Pair<Int, Int>> =
+    product(octopuses.indices, octopuses.first().indices)
 
-fun getFlashes(octopuses: List<List<Int>>): Iterable<Pair<Int, Int>> =
+fun getFlashes(octopuses: List<List<Int>>): Sequence<Pair<Int, Int>> =
     allIndices(octopuses).filter { (y, x) -> octopuses[y][x] > 9 }
 
 fun step(octopuses: List<MutableList<Int>>): Int {

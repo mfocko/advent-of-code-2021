@@ -1,10 +1,11 @@
 package year2021.day20
 
+import product
 import readInput
 
 data class Point(val x: Int, val y: Int) {
-    val square: Iterable<Point>
-        get() = (y - 1..y + 1).flatMap { y -> (x - 1..x + 1).map { x -> Point(x, y) } }
+    val square: Sequence<Point>
+        get() = product(y - 1..y + 1, x - 1..x + 1).map { (y, x) -> Point(x, y) }
 }
 
 data class TrenchMap(
@@ -24,15 +25,15 @@ data class TrenchMap(
     private val ys: IntRange
         get() = coordinateRange { it.y }
 
-    private val indices: Iterable<Point>
-        get() = ys.flatMap { y -> xs.map { x -> Point(x, y) } }
+    private val indices: Sequence<Point>
+        get() = product(ys, xs).map { (y, x) -> Point(x, y) }
 
     override fun toString(): String =
         ys.joinToString("\n") { y ->
             xs.joinToString("") { x -> get(x, y).toString() }
         }
 
-    private fun toIndex(square: Iterable<Point>): Int =
+    private fun toIndex(square: Sequence<Point>): Int =
         square.map { if (get(it) == '#') 1 else 0 }.reduce { acc, bit -> acc * 2 + bit }
 
     private fun enhancePixel(pixel: Point): Char = algorithm[toIndex(pixel.square)]

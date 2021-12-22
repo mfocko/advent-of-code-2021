@@ -1,5 +1,6 @@
 package year2021.day19
 
+import product
 import readInputAsString
 import java.time.Instant
 import java.util.*
@@ -44,8 +45,7 @@ val TRIGONOMETRY: Set<Pair<Int, Int>> =
         .toSet()
 
 val ROTATIONS: Set<Triple<Vector, Vector, Vector>> =
-    TRIGONOMETRY
-        .flatMap { alpha -> TRIGONOMETRY.flatMap { beta -> TRIGONOMETRY.map { gamma -> Triple(alpha, beta, gamma) } } }
+    product(TRIGONOMETRY, TRIGONOMETRY, TRIGONOMETRY)
         .map { (a, b, g) ->
             val (sinA, cosA) = a
             val (sinB, cosB) = b

@@ -1,5 +1,6 @@
 package year2021.day04
 
+import product
 import readInput
 
 class Bingo(description: List<String>) {
@@ -21,8 +22,7 @@ class Bingo(description: List<String>) {
         }
 
     private fun mark(board: MutableList<MutableList<Int>>, number: Int) {
-        board.indices
-            .flatMap { i -> board.indices.map { j -> Pair(i, j) } }
+        product(board.indices, board.indices)
             .filter { (i, j) -> board[i][j] == number }
             .forEach { (i, j) ->
                 val before = isWinningBoard(board)

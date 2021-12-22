@@ -1,5 +1,6 @@
 package year2021.day18
 
+import product
 import readInput
 
 enum class SnailfishNumberType {
@@ -193,8 +194,7 @@ fun part1(input: List<String>): Long =
 
 fun part2(input: List<String>): Long =
     input.map(String::toSnailfishNumber).let { numbers ->
-        numbers.indices
-            .flatMap { i -> numbers.indices.map { j -> i to j } }
+        product(numbers.indices, numbers.indices)
             .filter { (i, j) -> i != j }.maxOf { (i, j) ->
                 (numbers[i] + numbers[j]).magnitude
             }

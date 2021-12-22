@@ -1,5 +1,6 @@
 package year2021.day17
 
+import product
 import readInput
 import kotlin.math.absoluteValue
 import kotlin.math.min
@@ -26,8 +27,8 @@ data class Area(val min: Vector, val max: Vector) {
     val ySpeeds: IntRange
         get() = speeds { it.y }
 
-    val possibleVectors: Iterable<Vector>
-        get() = xSpeeds.flatMap { vx -> ySpeeds.map { vy -> Vector(vx, vy) } }
+    val possibleVectors: Sequence<Vector>
+        get() = product(xSpeeds, ySpeeds).map { (vx, vy) -> Vector(vx, vy) }
 }
 
 // region parsing

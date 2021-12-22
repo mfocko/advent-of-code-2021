@@ -1,5 +1,6 @@
 package year2021.day08
 
+import product
 import readInput
 
 class Patterns(private val patterns: MutableList<String>) {
@@ -31,9 +32,7 @@ class Patterns(private val patterns: MutableList<String>) {
     }
 
     private fun check(): Boolean =
-        segments
-            .indices
-            .flatMap { i -> segments.indices.map { j -> Pair(i, j) } }
+        product(segments.indices, segments.indices)
             .all { (i, j) ->
                 segments[i].intersect(segments[j]).size == (decoded[i] ?: emptySet()).intersect(
                     (decoded[j] ?: emptySet()).toSet()
